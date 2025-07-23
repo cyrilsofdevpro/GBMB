@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Management - Microfinance</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .form-section, .table-section {
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+    <div class="top-bar">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <span class="top-title">Microfinance Admin</span>
+</div>
+  <div class="container">
+    <h1>Staff Management</h1>
+
+    <!-- Add New Staff Form -->
+    <div class="form-section">
+      <h2>Add New Staff</h2>
+      <form id="staffForm">
+        <input type="text" id="staff_name" placeholder="Full Name" required />
+        <input type="text" id="staff_position" placeholder="Position (e.g., CEO, Manager)" required />
+        <input type="email" id="staff_email" placeholder="Email" required />
+        <input type="tel" id="staff_phone" placeholder="Phone Number" required />
+        <button type="submit">Add Staff</button>
+      </form>
+    </div>
+
+    <!-- Staff List Table -->
+    <div class="table-section">
+      <h2>All Staff</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody id="staff-list">
+          <!-- Staff rows will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Clear Button -->
+    <div style="margin-top: 20px;">
+      <button onclick="clearStaffList()">Reset Staff List</button>
+    </div>
+  </div>
+
+  <script>
+    const staffForm = document.getElementById("staffForm");
+    const staffListEl = document.getElementById("staff-list");
+
+    // Load existing staff from localStorage
+    function loadStaff() {
+      const staffList = JSON.parse(localStorage.getItem("staffList")) || [];
+      staffListEl.innerHTML = "";
+
+      staffList.forEach(staff => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${staff.name}</td>
+          <td>${staff.position}</td>
+          <td>${staff.email}</td>
+          <td>${staff.phone}</td>
+        `;
+        staffListEl.appendChild(row);
+      });
+    }
+
+    // Add new staff
+    staffForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("staff_name").value.trim();
+      const position = document.getElementById("staff_position").value.trim();
+      const email = document.getElementById("staff_email").value.trim();
+      const phone = document.getElementById("staff_phone").value.trim();
+
+      let staffList = JSON.parse(localStorage.getItem("staffList")) || [];
+
+      const duplicate = staffList.some(
+        s => s.name.toLowerCase() === name.toLowerCase() && s.email.toLowerCase() === email.toLowerCase()
+      );
+
+      if (duplicate) {
+        alert("This staff member already exists.");
+        return;
+      }
+
+      staffList.push({ name, position, email, phone });
+      localStorage.setItem("staffList", JSON.stringify(staffList));
+
+      staffForm.reset();
+      loadStaff();
+    });
+
+    // Clear staff
+    function clearStaffList() {
+      localStorage.removeItem("staffList");
+      loadStaff();
+    }
+
+    loadStaff();
+  </script>
+</body>
+</html>

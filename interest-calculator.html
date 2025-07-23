@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interest Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    .calculator-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-box">
+    <h2>Savings Interest Calculator</h2>
+    <input type="text" id="customerName" placeholder="Customer Name" required>
+    <input type="number" id="amount" placeholder="Deposit Amount" required>
+    <input type="date" id="depositDate" required>
+    <button onclick="calculateInterest()">Calculate</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function calculateInterest() {
+      const name = document.getElementById("customerName").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value);
+      const depositDate = new Date(document.getElementById("depositDate").value);
+      const today = new Date();
+
+      if (!name || !amount || !depositDate) {
+        document.getElementById("result").textContent = "Please fill all fields.";
+        return;
+      }
+
+      const days = Math.floor((today - depositDate) / (1000 * 60 * 60 * 24));
+      const interestRate = 0.15;
+      const finalAmount = amount * Math.pow(1 + interestRate, days);
+
+      document.getElementById("result").textContent =
+        `${name} would have ₦${finalAmount.toFixed(2)} after ${days} days.`;
+    }
+  </script>
+</body>
+</html>

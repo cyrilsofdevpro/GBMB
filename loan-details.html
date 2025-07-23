@@ -1,0 +1,106 @@
+<!-- loan-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loan Details - Microfinance Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Microfinance Admin</h2>
+    <ul>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a href="#">Accounts</a></li>
+      <li><a href="loans.html">Loans</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li><a href="#">Reports</a></li>
+      <li><a href="#">Staff</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="topbar">
+      <h3>Loan Details - #LN0001</h3>
+    </div>
+
+    <div class="loan-info-box">
+      <h4>Loan Summary</h4>
+      <p><strong>Customer:</strong> Grace Adeniyi</p>
+      <p><strong>Loan Amount:</strong> ₦250,000</p>
+      <p><strong>Interest:</strong> 12%</p>
+      <p><strong>Repayment Plan:</strong> Monthly</p>
+      <p><strong>Duration:</strong> 6 months</p>
+      <p><strong>Total Repayment:</strong> ₦280,000</p>
+      <p><strong>Status:</strong> 
+        <span id="loan-status" class="status pending">Pending</span>
+      </p>
+
+      <div class="loan-actions">
+        <button id="approveBtn" class="btn-approve">Approve</button>
+        <button id="rejectBtn" class="btn-reject">Reject</button>
+      </div>
+    </div>
+
+    <div class="repayment-history">
+      <h4>Repayment History</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Amount Paid</th>
+            <th>Method</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-07-01</td>
+            <td>₦50,000</td>
+            <td>Bank Transfer</td>
+            <td>First installment</td>
+          </tr>
+          <!-- More records -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="add-repayment-form">
+      <h4>Add Repayment</h4>
+      <form action="#" method="POST">
+        <label>Amount Paid (₦):</label>
+        <input type="number" name="amount" required />
+
+        <label>Payment Method:</label>
+        <select name="method" required>
+          <option value="bank">Bank Transfer</option>
+          <option value="cash">Cash</option>
+        </select>
+
+        <label>Note:</label>
+        <input type="text" name="note" />
+
+        <button class="btn-add" type="submit">Record Payment</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Add this in your HTML <head> or before </body> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // Supabase client setup
+  const SUPABASE_URL = 'https://cxnwrvnevhspqlozwusp.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4bndydm5ldmhzcHFsb3p3dXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODQxMjgsImV4cCI6MjA2ODY2MDEyOH0.DqyHNhYm1xY-6WtZCi-_6D8PnAqS272GLsL9Y-ppHko';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</body>
+</html>

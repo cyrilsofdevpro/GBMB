@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - Microfinance Admin</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .settings-section {
+      max-width: 600px;
+      margin: auto;
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .settings-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .settings-section label {
+      display: block;
+      margin: 10px 0;
+    }
+
+    .settings-section input[type="number"],
+    .settings-section input[type="checkbox"] {
+      margin-top: 5px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .settings-section button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: green;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .dark-mode {
+      background-color: #222;
+      color: #eee;
+    }
+
+    .dark-mode input,
+    .dark-mode label {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+    <div class="top-bar">
+  <a href="dashboard.html" class="back-btn">← Home</a>
+  <span class="top-title" id="pageTitle">Page Title</span>
+</div>
+  <div class="settings-section">
+    <h2>Settings</h2>
+
+    <label>
+      Minimum Deposit Amount:
+      <input type="number" id="minDeposit" />
+    </label>
+
+    <label>
+      Interest Rate (%):
+      <input type="number" id="interestRate" />
+    </label>
+
+    <label>
+      <input type="checkbox" id="darkModeToggle" />
+      Enable Dark Mode
+    </label>
+
+    <button onclick="saveSettings()">Save Settings</button>
+  </div>
+
+  <script>
+    function saveSettings() {
+      const settings = {
+        minDeposit: document.getElementById("minDeposit").value,
+        interestRate: document.getElementById("interestRate").value,
+        darkMode: document.getElementById("darkModeToggle").checked
+      };
+
+      localStorage.setItem("appSettings", JSON.stringify(settings));
+      applyTheme(settings.darkMode);
+      alert("Settings saved!");
+    }
+
+    function loadSettings() {
+      const stored = localStorage.getItem("appSettings");
+      if (stored) {
+        const settings = JSON.parse(stored);
+        document.getElementById("minDeposit").value = settings.minDeposit || '';
+        document.getElementById("interestRate").value = settings.interestRate || '';
+        document.getElementById("darkModeToggle").checked = settings.darkMode || false;
+        applyTheme(settings.darkMode);
+      }
+    }
+
+    function applyTheme(enableDark) {
+      document.body.classList.toggle("dark-mode", enableDark);
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

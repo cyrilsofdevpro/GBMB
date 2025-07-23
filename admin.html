@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f4f4f4;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2c7be5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .message {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Registration</h2>
+    <input type="text" id="reg_name" placeholder="Admin Name" required />
+    <input type="password" id="reg_password" placeholder="Create Password" required />
+    <button onclick="registerAdmin()">Register Admin</button>
+
+    <hr />
+
+    <h2>Admin Login</h2>
+    <input type="text" id="login_name" placeholder="Admin Name" required />
+    <input type="password" id="login_password" placeholder="Password" required />
+    <button onclick="loginAdmin()">Login</button>
+
+    <p class="message" id="message"></p>
+  </div>
+
+  <script>
+    // Register new admin
+    function registerAdmin() {
+      const name = document.getElementById("reg_name").value.trim();
+      const password = document.getElementById("reg_password").value.trim();
+      const message = document.getElementById("message");
+
+      if (!name || !password) {
+        message.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      let admins = JSON.parse(localStorage.getItem("admins")) || [];
+      if (admins.find(admin => admin.name.toLowerCase() === name.toLowerCase())) {
+        message.textContent = "Admin name already exists.";
+        return;
+      }
+
+      admins.push({ name, password });
+      localStorage.setItem("admins", JSON.stringify(admins));
+      message.style.color = "green";
+      message.textContent = "Admin registered successfully.";
+    }
+
+    // Admin login
+    function loginAdmin() {
+      const name = document.getElementById("login_name").value.trim();
+      const password = document.getElementById("login_password").value.trim();
+      const message = document.getElementById("message");
+
+      let admins = JSON.parse(localStorage.getItem("admins")) || [];
+      const matched = admins.find(admin => admin.name === name && admin.password === password);
+
+      if (matched) {
+        localStorage.setItem("loggedInAdmin", JSON.stringify(matched));
+        message.style.color = "green";
+        message.textContent = "Login successful! Redirecting...";
+        setTimeout(() => {
+          window.location.href = "file:///C:/Users/Cyril%20Sofdev/Documents/GBMB/dashboard.html"; // replace with your dashboard page
+        }, 1000);
+      } else {
+        message.style.color = "red";
+        message.textContent = "Invalid name or password.";
+      }
+    }
+  </script>
+</body>
+</html>

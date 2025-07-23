@@ -1,0 +1,111 @@
+<!-- loans.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loan Management - Microfinance Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Microfinance Admin</h2>
+    <ul>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a href="#">Accounts</a></li>
+      <li><a href="loans.html">Loans</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li><a href="#">Reports</a></li>
+      <li><a href="#">Staff</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="topbar">
+      <h3>Loan Applications</h3>
+      <button class="btn-add">+ New Loan</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search by customer name or loan ID..." />
+    </div>
+
+    <!-- Loan Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Loan ID</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Repayment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#LN0001</td>
+            <td>Grace Adeniyi</td>
+            <td>₦250,000</td>
+            <td>6 months</td>
+            <td><span class="status pending">Pending</span></td>
+            <td>₦50,000 paid</td>
+            <td>
+              <button class="btn-view">View</button>
+              <button class="btn-approve">Approve</button>
+              <button class="btn-reject">Reject</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#LN0002</td>
+            <td>John Okoro</td>
+            <td>₦100,000</td>
+            <td>3 months</td>
+            <td><span class="status approved">Approved</span></td>
+            <td>₦100,000 paid</td>
+            <td>
+              <button class="btn-view">View</button>
+              <button class="btn-edit">Edit</button>
+            </td>
+          </tr>
+          <!-- More loans here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Repayment Modal -->
+<div id="repaymentModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>Loan Repayment</h2>
+    <p id="loanDetails"></p>
+    <form id="repaymentForm">
+      <label for="repaymentAmount">Add Repayment Amount (₦):</label>
+      <input type="number" id="repaymentAmount" required />
+      <input type="hidden" id="repaymentLoanId" />
+      <button type="submit" class="btn-update">Update Repayment</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Add this in your HTML <head> or before </body> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // Supabase client setup
+  const SUPABASE_URL = 'https://cxnwrvnevhspqlozwusp.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4bndydm5ldmhzcHFsb3p3dXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODQxMjgsImV4cCI6MjA2ODY2MDEyOH0.DqyHNhYm1xY-6WtZCi-_6D8PnAqS272GLsL9Y-ppHko';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</body>
+</html>

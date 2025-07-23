@@ -1,0 +1,106 @@
+<!-- clear-deposit.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clear User Deposit - Microfinance Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="top-bar">
+  <a href="dashboard.html" class="back-btn">← Home</a>
+  <span class="top-title" id="pageTitle">Page Title</span>
+</div>
+  <h2>Clear Customer Deposit</h2>
+
+  <label for="customer-select">Select Customer:</label>
+  <select id="customer-select"></select>
+
+  <p>Current Deposit: ₦<span id="current-deposit">0</span></p>
+
+  <button id="clear-deposit-btn">Clear Deposit</button>
+
+  <p id="status-message" style="color: green;"></p>
+
+  <button onclick="clearDeposit('John Doe')">Clear</button>
+
+
+<script>
+  const allowedRoles = ["Admin", "Manager", "CEO"];
+
+  const staffData = JSON.parse(localStorage.getItem("loggedInStaff") || "{}");
+  const staffRole = staffData.role;
+
+  if (!allowedRoles.includes(staffRole)) {
+    alert("Access Denied: You are not authorized to clear deposits.");
+    window.location.href = "dashboard.html"; // Redirect unauthorized users
+  }
+
+  const customers = JSON.parse(localStorage.getItem("accounts") || "[]");
+  const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+
+  const customerSelect = document.getElementById("customer-select");
+  const currentDepositSpan = document.getElementById("current-deposit");
+  const clearBtn = document.getElementById("clear-deposit-btn");
+  const statusMessage = document.getElementById("status-message");
+
+  // Populate dropdown
+  customers.forEach(acc => {
+    const option = document.createElement("option");
+    option.value = acc.name;
+    option.textContent = acc.name;
+    customerSelect.appendChild(option);
+  });
+
+  function updateDepositDisplay(name) {
+    const userDeposits = transactions.filter(tx => tx.name === name && tx.type === "Deposit");
+    const total = userDeposits.reduce((sum, tx) => sum + tx.amount, 0);
+    currentDepositSpan.textContent = total.toLocaleString();
+  }
+
+  customerSelect.addEventListener("change", (e) => {
+    updateDepositDisplay(e.target.value);
+    statusMessage.textContent = "";
+  });
+
+  clearBtn.addEventListener("click", () => {
+    const name = customerSelect.value;
+    const filteredTransactions = transactions.filter(tx => !(tx.name === name && tx.type === "Deposit"));
+    localStorage.setItem("transactions", JSON.stringify(filteredTransactions));
+    updateDepositDisplay(name);
+    statusMessage.textContent = `Deposit for ${name} cleared.`;
+  });
+
+  // Default on load
+  if (customers.length > 0) {
+    customerSelect.value = customers[0].name;
+    updateDepositDisplay(customers[0].name);
+  }
+
+  function clearDeposit(customerName) {
+    const staff = JSON.parse(localStorage.getItem("loggedInStaff"));
+
+    // Allow only CEO, Manager, Admin to clear
+    const allowedRoles = ["CEO", "Manager", "Admin"];
+    if (!allowedRoles.includes(staff.role)) {
+      alert("Only authorized staff can clear deposits.");
+      return;
+    }
+
+    let deposits = JSON.parse(localStorage.getItem("deposits")) || [];
+    deposits = deposits.filter(dep => dep.name !== customerName);
+    localStorage.setItem("deposits", JSON.stringify(deposits));
+
+    alert(`${customerName}'s deposit cleared successfully.`);
+
+    // Optional: update dashboard if it's the same page
+    if (typeof updateDashboard === "function") {
+      updateDashboard();
+    }
+  }
+</script>
+
+  
+</body>
+</html>

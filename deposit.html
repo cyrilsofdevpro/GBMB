@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customer Deposit - Microfinance</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 12px 25px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      padding: 6px 10px;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Customer Deposit</h2>
+    <form id="depositForm">
+      <div class="form-group">
+        <label for="customer">Customer Name</label>
+        <input type="text" id="customer" required>
+      </div>
+      <div class="form-group">
+        <label for="amount">Deposit Amount (₦)</label>
+        <input type="number" id="amount" required>
+      </div>
+      <div class="form-group">
+        <label for="days">Number of Days</label>
+        <input type="number" id="days" required>
+      </div>
+      <button type="submit">Save Deposit</button>
+    </form>
+
+    <table id="depositTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Amount (₦)</th>
+          <th>Interest (₦)</th>
+          <th>Days</th>
+          <th>Time Left</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const depositForm = document.getElementById("depositForm");
+    const depositTable = document.querySelector("#depositTable tbody");
+
+    function saveDeposits(deposits) {
+      localStorage.setItem("deposits", JSON.stringify(deposits));
+    }
+
+    function loadDeposits() {
+      return JSON.parse(localStorage.getItem("deposits")) || [];
+    }
+
+    function renderDeposits() {
+      const deposits = loadDeposits();
+      depositTable.innerHTML = "";
+
+      deposits.forEach((deposit, index) => {
+        const tr = document.createElement("tr");
+        const now = new Date();
+        const endTime = new Date(deposit.timestamp + deposit.days * 24 * 60 * 60 * 1000);
+        const timeLeft = endTime - now;
+        const isCompleted = timeLeft <= 0;
+
+        const interest = Math.round(deposit.amount * 0.15 * deposit.days);
+
+        const timeLeftText = isCompleted
+          ? "Completed"
+          : formatTimeLeft(timeLeft);
+
+        tr.innerHTML = `
+          <td>${deposit.name}</td>
+          <td>₦${deposit.amount.toLocaleString()}</td>
+          <td>₦${interest.toLocaleString()}</td>
+          <td>${deposit.days}</td>
+          <td class="countdown" data-index="${index}">${timeLeftText}</td>
+          <td>${isCompleted ? "Completed" : "Running"}</td>
+          <td><button class="delete-btn" onclick="deleteDeposit(${index})">Delete</button></td>
+        `;
+
+        depositTable.appendChild(tr);
+      });
+    }
+
+    function formatTimeLeft(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / (60 * 60 * 24));
+      const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function deleteDeposit(index) {
+      const deposits = loadDeposits();
+      deposits.splice(index, 1);
+      saveDeposits(deposits);
+      renderDeposits();
+    }
+
+    depositForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("customer").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value);
+      const days = parseInt(document.getElementById("days").value);
+
+      const newDeposit = {
+        name,
+        amount,
+        days,
+        timestamp: Date.now()
+      };
+
+      const deposits = loadDeposits();
+      deposits.push(newDeposit);
+      saveDeposits(deposits);
+
+      depositForm.reset();
+      renderDeposits();
+    });
+
+    function startCountdowns() {
+      setInterval(() => {
+        const countdownElements = document.querySelectorAll(".countdown");
+        const deposits = loadDeposits();
+
+        countdownElements.forEach((el) => {
+          const index = el.dataset.index;
+          const deposit = deposits[index];
+          const now = new Date();
+          const endTime = new Date(deposit.timestamp + deposit.days * 24 * 60 * 60 * 1000);
+          const timeLeft = endTime - now;
+
+          if (timeLeft <= 0) {
+            el.textContent = "Completed";
+          } else {
+            el.textContent = formatTimeLeft(timeLeft);
+          }
+        });
+      }, 1000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderDeposits();
+      startCountdowns();
+    });
+  </script>
+</body>
+</html>

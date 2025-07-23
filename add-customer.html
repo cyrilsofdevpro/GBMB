@@ -1,0 +1,77 @@
+<!-- add-customer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Customer - Microfinance Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Microfinance Admin</h2>
+    <ul>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a href="#">Accounts</a></li>
+      <li><a href="#">Loans</a></li>
+      <li><a href="#">Transactions</a></li>
+      <li><a href="#">Reports</a></li>
+      <li><a href="#">Staff</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="topbar">
+      <h3>Add New Customer</h3>
+    </div>
+
+    <form class="form-box" action="#" method="POST" enctype="multipart/form-data">
+      <label>Full Name:</label>
+      <input type="text" name="fullname" required />
+
+      <label>Email Address:</label>
+      <input type="email" name="email" required />
+
+      <label>Phone Number:</label>
+      <input type="tel" name="phone" required />
+
+      <label>BVN or NIN:</label>
+      <input type="text" name="identity" required />
+
+      <label>Gender:</label>
+      <select name="gender" required>
+        <option value="">-- Select Gender --</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+
+      <label>Account Status:</label>
+      <select name="status" required>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+
+      <label>KYC Document (PDF or Image):</label>
+      <input type="file" name="kyc" accept=".pdf, .jpg, .jpeg, .png" />
+
+      <button type="submit" class="btn-add">Create Customer</button>
+    </form>
+  </div>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Add this in your HTML <head> or before </body> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // Supabase client setup
+  const SUPABASE_URL = 'https://cxnwrvnevhspqlozwusp.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4bndydm5ldmhzcHFsb3p3dXNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwODQxMjgsImV4cCI6MjA2ODY2MDEyOH0.DqyHNhYm1xY-6WtZCi-_6D8PnAqS272GLsL9Y-ppHko';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</body>
+</html>

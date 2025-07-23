@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accounts / Transactions</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f6f8;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1, h2 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+    .filters, .form-row, #editForm .form-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    input, select, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      flex: 1;
+    }
+    button {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #1b5e20;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #43a047;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+    #editSection {
+      background: #fffde7;
+      padding: 20px;
+      border: 1px solid #fdd835;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+    <div class="top-bar">
+  <a href="dashboard.html" class="back-btn">← Home</a>
+  <span class="top-title" id="pageTitle">Page Title</span>
+</div>
+  <div class="container">
+    <h1>Transactions</h1>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input type="text" id="filter-customer" placeholder="Enter customer name..." />
+      <input type="date" id="filter-date" />
+      <button id="filter-btn">Filter</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="table-container">
+      <table id="transactions-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- New Account Form -->
+    <div class="new-account-form">
+      <h2>Add New Account</h2>
+      <form id="accountForm">
+        <div class="form-row">
+          <input type="text" id="full_name" placeholder="Full Name" required />
+          <input type="text" id="account_number" placeholder="Account Number" required />
+        </div>
+        <div class="form-row">
+          <input type="text" id="type" placeholder="Account Type (e.g., Savings, Current)" required />
+          <input type="number" id="balance" placeholder="Initial Balance" required />
+        </div>
+        <div class="form-row">
+          <button type="submit">Create Account</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Account List -->
+    <div class="account-list">
+      <h2>📋 All Accounts</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Account No</th>
+              <th>Customer</th>
+              <th>Type</th>
+              <th>Balance</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="accountBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div id="editSection" style="display: none;">
+      <h2>Edit Account</h2>
+      <form id="editForm">
+        <input type="hidden" id="edit_id" />
+        <div class="form-row">
+          <input type="text" id="edit_customer" placeholder="Full Name" required />
+          <input type="text" id="edit_type" placeholder="Account Type" required />
+        </div>
+        <div class="form-row">
+          <input type="number" id="edit_balance" placeholder="Balance" required />
+          <select id="edit_status">
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <button type="submit">Update Account</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <!-- Deposit Money Section -->
+<div class="deposit-section">
+  <h2>💰 Deposit Money</h2>
+  <form id="depositForm">
+    <div class="form-row">
+      <input type="text" id="deposit_name" placeholder="Customer Name or Account Number" required />
+      <input type="number" id="deposit_amount" placeholder="Amount to Deposit" required />
+    </div>
+    <div class="form-row">
+      <input type="text" id="deposit_note" placeholder="Note (optional)" />
+      <button type="submit">Submit Deposit</button>
+    </div>
+  </form>
+</div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="accounts.js" defer></script>
+</body>
+</html>
